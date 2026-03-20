@@ -1,0 +1,5 @@
+pretty_midi
+music21
+customtkinter
+pyyaml
+pygame

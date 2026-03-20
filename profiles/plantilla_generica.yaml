@@ -1,0 +1,111 @@
+# ═══════════════════════════════════════════════════════════════════
+# PLANTILLA GENÉRICA — Motor de Reglas para Arreglos Musicales
+# ═══════════════════════════════════════════════════════════════════
+# Copiá este archivo y editalo para crear el perfil de tu instrumento.
+# Guardalo con un nombre descriptivo: reglas_vibrafono.yaml, etc.
+#
+# REFERENCIA RÁPIDA DE NOTAS MIDI:
+#   C2=36  G2=43  C3=48  G3=55  C4=60  G4=67  C5=72  G5=79  C6=84
+# ═══════════════════════════════════════════════════════════════════
+
+meta:
+  instrumento: "nombre_instrumento"         # Nombre visible en la app
+  descripcion: "Descripción del arreglo"    # Para qué sirve este perfil
+  autor: ""                                 # Quién creó estas reglas
+  version: "1.0"
+  genero: "general"                         # general, jazz, clasico, popular...
+
+# ───────────────────────────────────────────────────────────────────
+# VOCES
+# Define una entrada por cada voz del instrumento destino.
+# El orden importa: primera voz = más aguda, última = más grave.
+# Podés tener 2, 3, 4... voces. El motor se adapta automáticamente.
+# ───────────────────────────────────────────────────────────────────
+voces:
+  voz_1:                         # Cambiá el nombre: soprano, violin_1, etc.
+    rango_midi: [60, 84]         # [MIDI_minimo, MIDI_maximo]
+    nombre_rango: "C4 - C6"      # Solo informativo, para documentación
+    salto_maximo: 7              # semitonos — no se aplica aún, para futuro
+
+  voz_2:
+    rango_midi: [48, 72]
+    nombre_rango: "C3 - C5"
+    salto_maximo: 9
+
+  voz_3:
+    rango_midi: [36, 60]
+    nombre_rango: "C2 - C4"
+    salto_maximo: 12
+    duracion_minima: 1.0         # negra = 1.0 | corchea = 0.5 | redonda = 4.0
+    extender_duracion: false     # true = llenar silencios con la nota sostenida
+
+  voz_4:
+    rango_midi: [24, 48]
+    nombre_rango: "C1 - C3"
+    salto_maximo: 12
+    duracion_minima: 1.0
+    extender_duracion: true      # Recomendado para el bajo
+
+# ───────────────────────────────────────────────────────────────────
+# ARMONIZACIÓN
+# Define cómo generar voces cuando hay menos notas que voces.
+#
+# EXPRESIONES DISPONIBLES:
+#   original          → la nota tal como viene del MIDI
+#   soprano           → referencia a la voz más aguda
+#   voz_1             → referencia a la primera nota del grupo
+#   voz_2             → referencia a la segunda nota del grupo
+#   voz_grave         → la nota más grave del grupo
+#   <nombre> - N      → N semitonos abajo de <nombre>
+#   <nombre> + N      → N semitonos arriba de <nombre>
+#   <nombre_de_voz>   → referencia a una voz ya calculada en este grupo
+#
+# INTERVALOS COMUNES:
+#   -1 = semitono  -2 = tono  -3 = 3ra menor  -4 = 3ra mayor
+#   -5 = 4ta justa -7 = 5ta justa  -9 = 6ta mayor  -12 = octava
+# ───────────────────────────────────────────────────────────────────
+armonizacion:
+
+  # ── 1 nota en el MIDI: generar las 4 voces desde esa nota ────────
+  notas_simultaneas_1:
+    voz_1: original
+    voz_2: soprano - 3          # tercera menor
+    voz_3: soprano - 7          # quinta justa
+    voz_4: soprano - 12         # octava
+
+  # ── 2 notas: voz_1 y voz_4 fijas, voz_2 y voz_3 generadas ───────
+  notas_simultaneas_2:
+    voz_1: voz_aguda
+    voz_2: soprano - 3
+    voz_3: soprano - 7
+    voz_4: voz_grave
+
+  # ── 3 notas: voz_1, voz_2, voz_4 directas; voz_3 generada ───────
+  notas_simultaneas_3:
+    voz_1: voz_1
+    voz_2: voz_2
+    voz_3: voz_2 - 5            # cuarta abajo de voz_2
+    voz_4: voz_3
+
+  # ── Fallback: si no hay regla específica para N notas ─────────────
+  # notas_simultaneas_default:
+  #   voz_1: original
+  #   voz_2: soprano - 3
+  #   voz_3: soprano - 7
+  #   voz_4: soprano - 12
+
+# ───────────────────────────────────────────────────────────────────
+# RESTRICCIONES
+# ───────────────────────────────────────────────────────────────────
+restricciones:
+  bajo_sostenido: true                   # Extiende la última voz hasta la siguiente nota
+  notas_de_paso_en_saltos_grandes: false # Interpola nota de paso en saltos grandes
+  umbral_salto_nota_de_paso: 12          # Semitonos mínimos para insertar nota de paso
+
+# ───────────────────────────────────────────────────────────────────
+# PROCESAMIENTO
+# ───────────────────────────────────────────────────────────────────
+procesamiento:
+  snap_grid: 0.25                # Cuantización rítmica (0.25 = semicorchea)
+  duracion_minima_nota: 0.25     # Ninguna nota puede ser más corta que esto
+  tolerancia_simultaneidad: 0.05 # Segundos de tolerancia para agrupar notas

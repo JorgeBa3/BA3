@@ -1,0 +1,83 @@
+# ═══════════════════════════════════════════════════════════════════
+# PERFIL: Marimba Guatemalteca de Concierto
+# Motor de Reglas para Arreglos Musicales
+# ═══════════════════════════════════════════════════════════════════
+# Caso de estudio principal del sistema.
+# Define las 4 voces estándar de un arreglo para marimba guatemalteca
+# (Soprano, Alto, Tenor, Bajo) con sus rangos reales de concierto.
+# ═══════════════════════════════════════════════════════════════════
+
+meta:
+  instrumento: "Marimba Guatemalteca"
+  descripcion: "Arreglo estándar para marimba guatemalteca de concierto, 4 voces"
+  autor: ""
+  version: "1.0"
+  genero: "general"
+
+# ───────────────────────────────────────────────────────────────────
+# VOCES — Rangos reales de la marimba guatemalteca de concierto
+# ───────────────────────────────────────────────────────────────────
+voces:
+  Soprano:
+    rango_midi: [67, 84]         # G4 - C6
+    nombre_rango: "G4 - C6"
+    salto_maximo: 7
+    duracion_minima: 0.25
+
+  Alto:
+    rango_midi: [55, 72]         # G3 - C5
+    nombre_rango: "G3 - C5"
+    salto_maximo: 7
+    duracion_minima: 0.25
+
+  Tenor:
+    rango_midi: [43, 60]         # G2 - C4
+    nombre_rango: "G2 - C4"
+    salto_maximo: 9
+    duracion_minima: 0.25
+
+  Bajo:
+    rango_midi: [31, 48]         # G1 - C3
+    nombre_rango: "G1 - C3"
+    salto_maximo: 12
+    duracion_minima: 1.0
+    extender_duracion: true
+
+# ───────────────────────────────────────────────────────────────────
+# ARMONIZACIÓN
+# ───────────────────────────────────────────────────────────────────
+armonizacion:
+
+  notas_simultaneas_1:
+    Soprano: original
+    Alto:    Soprano - 3         # tercera menor
+    Tenor:   Soprano - 7         # quinta justa
+    Bajo:    Soprano - 12        # octava
+
+  notas_simultaneas_2:
+    Soprano: voz_aguda
+    Alto:    Soprano - 3
+    Tenor:   Soprano - 7
+    Bajo:    voz_grave
+
+  notas_simultaneas_3:
+    Soprano: voz_1
+    Alto:    voz_2
+    Tenor:   Alto - 5            # cuarta justa abajo del Alto
+    Bajo:    voz_3
+
+# ───────────────────────────────────────────────────────────────────
+# RESTRICCIONES
+# ───────────────────────────────────────────────────────────────────
+restricciones:
+  bajo_sostenido: true
+  notas_de_paso_en_saltos_grandes: true
+  umbral_salto_nota_de_paso: 12
+
+# ───────────────────────────────────────────────────────────────────
+# PROCESAMIENTO
+# ───────────────────────────────────────────────────────────────────
+procesamiento:
+  snap_grid: 0.25
+  duracion_minima_nota: 0.25
+  tolerancia_simultaneidad: 0.05

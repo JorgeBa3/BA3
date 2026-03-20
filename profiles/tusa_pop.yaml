@@ -1,0 +1,127 @@
+# ═══════════════════════════════════════════════════════════════════
+# PERFIL: Piano Pop → Marimba Guatemalteca
+# Caso de uso: canciones de pop latinoamericano (ej. Tusa - Karol G)
+# ═══════════════════════════════════════════════════════════════════
+#
+# Diferencias clave respecto al perfil "general":
+#
+#  1. MELODÍA PROMINENTE: el Soprano lleva la melodía pop sin adornos.
+#     Se permite rango más amplio y saltos más grandes que en música
+#     clásica, porque el pop usa frases más angulares.
+#
+#  2. RITMO EN LUGAR DE ARMONÍA COMPLEJA: el pop usa acordes de 3-4
+#     notas con función clara (I-IV-V-vi). Las voces medias (Alto y
+#     Tenor) refuerzan el acorde sin complicar la textura.
+#
+#  3. BAJO RÍTMICO: en pop el bajo marca tiempos fuertes (1 y 3) más
+#     que sostener notas largas. Se reduce duracion_minima a corchea
+#     para permitir más movimiento, pero extender_duracion sigue activo
+#     para llenar los espacios entre ataques.
+#
+#  4. INTERVALOS: se privilegia la 3ra mayor (-4) sobre la 3ra menor
+#     (-3) porque el pop latinoamericano usa más modos mayores y el
+#     sonido "brillante" de la 3ra mayor es más idiomático en este
+#     género que en la música guatemalteca tradicional.
+#
+#  5. VOICING MÁS ABIERTO: los intervalos son un poco más grandes
+#     (5ta y octava) para dar claridad en un contexto pop donde la
+#     textura tiende a ser más abierta que en la escritura coral
+#     clásica.
+# ═══════════════════════════════════════════════════════════════════
+
+meta:
+  instrumento: "Marimba Guatemalteca"
+  descripcion: "Adaptación de pop latinoamericano (estilo Tusa/Karol G) a marimba guatemalteca de concierto"
+  autor: ""
+  version: "1.0"
+  genero: "pop_latino"
+  referencia: "Tusa — Karol G & Nicki Minaj (2019)"
+
+# ───────────────────────────────────────────────────────────────────
+# VOCES
+# Mismos rangos físicos de la marimba guatemalteca.
+# Lo que cambia es el comportamiento rítmico de cada voz.
+# ───────────────────────────────────────────────────────────────────
+voces:
+  Soprano:
+    rango_midi: [67, 84]         # G4 - C6 — lleva la melodía
+    nombre_rango: "G4 - C6"
+    salto_maximo: 10             # el pop permite frases más angulares
+    duracion_minima: 0.25        # semicorchea — precisión melódica
+
+  Alto:
+    rango_midi: [55, 72]         # G3 - C5 — refuerzo armónico
+    nombre_rango: "G3 - C5"
+    salto_maximo: 7
+    duracion_minima: 0.25
+
+  Tenor:
+    rango_midi: [43, 60]         # G2 - C4 — relleno armónico
+    nombre_rango: "G2 - C4"
+    salto_maximo: 9
+    duracion_minima: 0.25
+
+  Bajo:
+    rango_midi: [31, 48]         # G1 - C3 — bajo rítmico
+    nombre_rango: "G1 - C3"
+    salto_maximo: 12
+    duracion_minima: 0.5         # corchea — más ágil que el bajo clásico
+    extender_duracion: true      # igual sostiene hasta la siguiente nota
+
+# ───────────────────────────────────────────────────────────────────
+# ARMONIZACIÓN — Estilo pop latino
+#
+# El pop usa progresiones I-IV-V-vi con texturas de acordes abiertos.
+# Se prioriza la 3ra mayor para el sonido "brillante" del pop,
+# y la 5ta justa para el bajo como nota de refuerzo armónico.
+# ───────────────────────────────────────────────────────────────────
+armonizacion:
+
+  # ── 1 nota: construir acorde pop desde la melodía ────────────────
+  # En pop el acorde típico es: fundamental + 3ra mayor + 5ta + octava
+  notas_simultaneas_1:
+    Soprano: original
+    Alto:    Soprano - 4         # 3ra mayor (sonido pop brillante)
+    Tenor:   Soprano - 7         # 5ta justa (estabilidad armónica)
+    Bajo:    Soprano - 12        # octava abajo (fundamento)
+
+  # ── 2 notas: melodía + bajo, generar las voces medias ────────────
+  # El pop a menudo tiene melodía + bajo marcado. Las voces medias
+  # rellenan el acorde con 3ra y 5ta desde la melodía.
+  notas_simultaneas_2:
+    Soprano: voz_aguda
+    Alto:    Soprano - 4         # 3ra mayor
+    Tenor:   Soprano - 7         # 5ta justa
+    Bajo:    voz_grave
+
+  # ── 3 notas: típico acorde pop de 3 sonidos ──────────────────────
+  # Cuando llegan 3 notas (fundamental + 3ra + 5ta del piano),
+  # distribuir directo y generar el Tenor por movimiento contrario.
+  notas_simultaneas_3:
+    Soprano: voz_1               # nota más aguda del piano = melodía
+    Alto:    voz_2               # nota media = 3ra del acorde
+    Tenor:   Alto - 4            # 3ra mayor abajo del Alto (duplica acorde)
+    Bajo:    voz_3               # nota más grave del piano = bajo
+
+  # ── Fallback para 4+ notas ya manejado por asignación directa ────
+
+# ───────────────────────────────────────────────────────────────────
+# RESTRICCIONES
+# En pop el movimiento es más libre que en escritura coral clásica.
+# Se mantiene el bajo sostenido pero se baja el umbral de notas de
+# paso a 9 semitonos (6ta) para suavizar más el movimiento.
+# ───────────────────────────────────────────────────────────────────
+restricciones:
+  bajo_sostenido: true
+  notas_de_paso_en_saltos_grandes: true
+  umbral_salto_nota_de_paso: 9   # interviene desde saltos de 6ta (más activo que el default 12)
+
+# ───────────────────────────────────────────────────────────────────
+# PROCESAMIENTO
+# El pop suele tener cuantización más estricta que la música clásica.
+# snap_grid en corchea (0.5) da un feel más "cuadrado" y rítmico.
+# ───────────────────────────────────────────────────────────────────
+procesamiento:
+  snap_grid: 0.5                 # corchea — feel rítmico pop
+  duracion_minima_nota: 0.25
+  tolerancia_simultaneidad: 0.03 # MIDIs de pop suelen estar más cuantizados
