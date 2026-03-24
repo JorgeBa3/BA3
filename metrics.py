@@ -4,16 +4,37 @@ Métricas para evaluar la calidad del arreglo generado.
 Compatible con cualquier número de voces y nombres dinámicos.
 """
 
-from marimba_range import RANGOS, NOMBRES_VOCES, esta_en_rango
+from marimba_range import RANGOS, NOMBRES_VOCES
 
 
-def calcular_metricas(voces_antes, voces_despues, nombres_voz=None):
+def calcular_metricas(voces_antes, voces_despues, nombres_voz=None, rangos_yaml=None):
     """
     Calcula métricas por voz.
-    nombres_voz: lista de strings. Si es None, usa NOMBRES_VOCES legacy.
+
+    Parámetros:
+        voces_antes  : voces originales (no se usan aún, reservado)
+        voces_despues: voces procesadas — lista de listas de notas
+        nombres_voz  : lista de strings. Si es None, usa NOMBRES_VOCES legacy.
+        rangos_yaml  : dict {idx: (lo, hi)} — retornado por rule_engine.
+                       Si se pasa, se usa para validar rango en lugar de
+                       los rangos hardcodeados de marimba_range.
+                       Permite métricas correctas con cualquier perfil YAML.
     """
     if nombres_voz is None:
         nombres_voz = NOMBRES_VOCES[:len(voces_despues)]
+
+    # Construir tabla de rangos efectivos para esta sesión:
+    # Prioridad 1 → rangos_yaml (del YAML cargado)
+    # Prioridad 2 → RANGOS legacy de marimba_range (compatibilidad)
+    # Prioridad 3 → None (sin restricción de rango)
+    rangos_efectivos = {}
+    for i in range(len(voces_despues)):
+        if rangos_yaml and i in rangos_yaml:
+            rangos_efectivos[i] = rangos_yaml[i]
+        elif i in RANGOS:
+            rangos_efectivos[i] = RANGOS[i]
+        else:
+            rangos_efectivos[i] = None
 
     resultados = {}
     for i, nombre in enumerate(nombres_voz):
@@ -21,14 +42,16 @@ def calcular_metricas(voces_antes, voces_despues, nombres_voz=None):
             break
         notas = voces_despues[i]
 
-        # Rango: usar RANGOS legacy si el índice existe, sino usar toda la escala
-        if i < len(RANGOS):
-            en_rango = sum(1 for n in notas if esta_en_rango(n["pitch"], i))
+        # Notas en rango
+        rango = rangos_efectivos.get(i)
+        if rango is not None:
+            lo, hi = rango
+            en_rango = sum(1 for n in notas if lo <= n["pitch"] <= hi)
         else:
-            en_rango = len(notas)   # sin restricción de rango conocido
+            en_rango = len(notas)   # sin restricción conocida
         pct_rango = (en_rango / len(notas) * 100) if notas else 0
 
-        # Voice leading
+        # Voice leading: promedio de salto entre notas consecutivas
         saltos = []
         notas_ord = sorted(notas, key=lambda x: x["offset"])
         for j in range(1, len(notas_ord)):
@@ -36,7 +59,7 @@ def calcular_metricas(voces_antes, voces_despues, nombres_voz=None):
             saltos.append(salto)
         vl_promedio = sum(saltos) / len(saltos) if saltos else 0
 
-        # Colisiones
+        # Colisiones: dos notas de la misma voz en el mismo offset
         offsets = [n["offset"] for n in notas]
         colisiones = len(offsets) - len(set(offsets))
 

@@ -27,9 +27,9 @@ VOZ_MAP = {
     "bajo_jazz":      instrument.ElectricGuitar,
     "voz_media_1":    instrument.ElectricGuitar,
     "voz_media_2":    instrument.ElectricGuitar,
-    # Saxofones
-    "alto":           instrument.AltoSaxophone,
-    "tenor":          instrument.TenorSaxophone,
+    # Saxofones — solo cuando el nombre incluye "sax" explícitamente
+    "alto_sax":       instrument.AltoSaxophone,
+    "tenor_sax":      instrument.TenorSaxophone,
     "baritono":       instrument.BaritoneSaxophone,
     "barítono":       instrument.BaritoneSaxophone,
     "soprano_sax":    instrument.SopranoSaxophone,
@@ -38,11 +38,13 @@ VOZ_MAP = {
     "keys":           instrument.ElectricPiano,
     "bajo_electrico": instrument.ElectricBass,
     "bajo_eléctrico": instrument.ElectricBass,
-    # Voces genéricas de marimba/teclado
+    # Voces genéricas de marimba — Soprano/Alto/Tenor/Bajo con
+    # mayúscula inicial son siempre Marimba salvo que el
+    # meta.instrumento diga otra cosa
     "soprano":        instrument.Marimba,
+    "alto":           instrument.Marimba,
+    "tenor":          instrument.Marimba,
     "bajo":           instrument.Marimba,
-    "tenor_voz":      instrument.Marimba,
-    "alto_voz":       instrument.Marimba,
 }
 
 # ── Mapa por meta.instrumento del YAML (keywords en lowercase) ──────
@@ -133,6 +135,13 @@ def construir_score(voces, drum_notas, tempo_bpm,
         nombre = nombres_voz[i] if i < len(nombres_voz) else f"Voz {i+1}"
         inst   = _resolver_instrumento(nombre, meta_instrumento)
 
+        # Forzar el midiProgram explícitamente para que music21
+        # lo escriba en el archivo MIDI como program_change
+        if hasattr(inst, 'midiProgram') and inst.midiProgram is not None:
+            inst.midiProgram = inst.midiProgram  # confirmar valor
+        # Asignar canal MIDI explícito (0-indexed, evitar canal 9 = drums)
+        inst.midiChannel = i % 9  # 0-8, saltando el 9
+
         part = stream.Part()
         part.partName = nombre
         part.id       = nombre
@@ -146,7 +155,8 @@ def construir_score(voces, drum_notas, tempo_bpm,
             part.insert(snap(n["offset"]), nueva)
 
         score.append(part)
-        print(f"[exporter] '{nombre}' → {inst.__class__.__name__}: {len(voz_notas)} notas")
+        print(f"[exporter] '{nombre}' → {inst.__class__.__name__} "
+              f"(program {getattr(inst,'midiProgram',0)}): {len(voz_notas)} notas")
 
     if drum_notas:
         drum_part = _construir_bateria(drum_notas, tempo_bpm, time_signature)
@@ -180,14 +190,22 @@ def exportar(score, output_dir, nombre_base):
 
 
 def _construir_bateria(drum_notas, tempo_bpm, time_signature):
+    """Construye la parte de batería en canal 9 (estándar General MIDI)."""
     dp = stream.Part()
     dp.partName = "Drums"
     dp.id       = "Drums"
-    dp.insert(0, instrument.Percussion())
+
+    # Percusión en canal 9 — estándar General MIDI
+    perc = instrument.Percussion()
+    perc.midiChannel = 9
+    dp.insert(0, perc)
     dp.insert(0, meter.TimeSignature(time_signature))
     dp.insert(0, tempo.MetronomeMark(number=int(tempo_bpm)))
+
     for n in drum_notas:
-        nueva = note.Note(n["pitch"])
+        nueva = note.Unpitched()
+        nueva.displayPitch = note.Note(n["pitch"]).pitch
         nueva.quarterLength = n["duration"]
         dp.insert(snap(n["offset"]), nueva)
+
     return dp

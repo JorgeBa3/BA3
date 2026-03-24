@@ -519,7 +519,7 @@ class ArrangerApp(ctk.CTk):
 
             # 4. Métricas
             log("── Calculando métricas…", "info")
-            metricas = calcular_metricas(None, voces, nombres_voz)
+            metricas = calcular_metricas(None, voces, nombres_voz, rangos_yaml=rangos)
             self.after(0, lambda m=metricas: self._mostrar_metricas(m))
             prog(0.75)
 

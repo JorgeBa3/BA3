@@ -1,0 +1,69 @@
+# ═══════════════════════════════════════════════════════════════════
+# PERFIL: Cuarteto de Cuerdas Clásico
+# Violín I, Violín II, Viola, Cello
+# BA³ | Para comparar con marimba guatemalteca
+# ═══════════════════════════════════════════════════════════════════
+# Diferencias clave vs marimba:
+#   - Rangos más amplios por instrumento (~3.5 octavas cada uno)
+#   - El Cello es voz MELÓDICA, no bajo sostenido (extender=false)
+#   - Voicing cerrado entre violines (3ra menor -3)
+#   - El Cello duplica la fundamental pero con movimiento propio
+
+meta:
+  instrumento: "Cuarteto de Cuerdas"
+  descripcion: "Arreglo para cuarteto clásico: Violín I, Violín II, Viola, Cello"
+  autor: ""
+  version: "1.0"
+  genero: "clasico"
+
+voces:
+  Violin_I:
+    rango_midi: [67, 95]       # G4 - B6
+    nombre_rango: "G4 - B6"
+    duracion_minima: 0.25
+
+  Violin_II:
+    rango_midi: [60, 88]       # C4 - E6
+    nombre_rango: "C4 - E6"
+    duracion_minima: 0.25
+
+  Viola:
+    rango_midi: [48, 81]       # C3 - A5
+    nombre_rango: "C3 - A5"
+    duracion_minima: 0.25
+
+  Cello:
+    rango_midi: [36, 74]       # C2 - D5
+    nombre_rango: "C2 - D5"
+    duracion_minima: 0.5
+    extender_duracion: false   # cello es voz melódica, no bajo de pedal
+
+armonizacion:
+
+  notas_simultaneas_1:
+    Violin_I:  original
+    Violin_II: Violin_I - 3    # 3ra menor (textura cerrada de cuerdas)
+    Viola:     Violin_II - 4   # 3ra mayor abajo del Violin II
+    Cello:     Violin_I - 12   # octava abajo (duplicación de registro)
+
+  notas_simultaneas_2:
+    Violin_I:  voz_aguda
+    Violin_II: Violin_I - 4
+    Viola:     Violin_I - 7
+    Cello:     voz_grave
+
+  notas_simultaneas_3:
+    Violin_I:  voz_1
+    Violin_II: voz_2
+    Viola:     Violin_II - 5   # cuarta justa abajo
+    Cello:     voz_3
+
+restricciones:
+  bajo_sostenido: false        # cello tiene línea melódica propia
+  notas_de_paso_en_saltos_grandes: true
+  umbral_salto_nota_de_paso: 9
+
+procesamiento:
+  snap_grid: 0.25
+  duracion_minima_nota: 0.25
+  tolerancia_simultaneidad: 0.04

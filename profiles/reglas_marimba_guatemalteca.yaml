@@ -1,71 +1,72 @@
-# Reglas de arreglo: Marimba Guatemalteca
-# Autor: (tu nombre)
-# Versión: 1.0
-# Descripción: Reglas para adaptar arreglos de piano/MIDI a marimba guatemalteca de concierto
+# ═══════════════════════════════════════════════════════════════════
+# PERFIL: Marimba Guatemalteca de Concierto
+# BA³ — Motor de Reglas YAML
+# ═══════════════════════════════════════════════════════════════════
+# USO: Cargar este archivo en la app con el botón "Cargar"
+# COMPATIBLE CON: rule_engine.py v2+
+# ═══════════════════════════════════════════════════════════════════
 
 meta:
-  instrumento: marimba_guatemalteca
-  genero: general
+  instrumento: "Marimba Guatemalteca"
   descripcion: "Arreglo estándar para marimba guatemalteca de concierto, 4 voces"
+  autor: ""
+  version: "2.0"
+  genero: "general"
 
+# ───────────────────────────────────────────────────────────────────
+# VOCES
+# IMPORTANTE: Nombres con mayúscula inicial — reconocidos como
+# Marimba por el exporter. NO usar "alto"/"tenor" en minúscula
+# porque mapean a AltoSaxophone/TenorSaxophone.
+# ───────────────────────────────────────────────────────────────────
 voces:
-  soprano:
-    rango_midi: [67, 84]       # G4 - C6
+  Soprano:
+    rango_midi: [67, 84]
     nombre_rango: "G4 - C6"
-    movimiento_preferido: grados_conjuntos
-    salto_maximo: 7            # semitonos (quinta justa)
-  alto:
-    rango_midi: [55, 72]       # G3 - C5
+    duracion_minima: 0.25
+
+  Alto:
+    rango_midi: [55, 72]
     nombre_rango: "G3 - C5"
-    movimiento_preferido: grados_conjuntos
-    salto_maximo: 7
-  tenor:
-    rango_midi: [43, 60]       # G2 - C4
+    duracion_minima: 0.25
+
+  Tenor:
+    rango_midi: [43, 60]
     nombre_rango: "G2 - C4"
-    movimiento_preferido: grados_conjuntos
-    salto_maximo: 9
-  bajo:
-    rango_midi: [31, 48]       # G1 - C3
+    duracion_minima: 0.25
+
+  Bajo:
+    rango_midi: [31, 48]
     nombre_rango: "G1 - C3"
-    movimiento_preferido: grados_conjuntos
-    salto_maximo: 12
-    duracion_minima: 1.0       # negra
-    extender_duracion: true    # llenar silencios con nota sostenida
+    duracion_minima: 1.0
+    extender_duracion: true
 
 armonizacion:
+
   notas_simultaneas_1:
-    # Solo hay 1 nota: generar las 4 voces
-    soprano: original
-    alto: soprano - 3          # tercera menor abajo
-    tenor: soprano - 7         # quinta justa abajo
-    bajo: soprano - 12         # octava abajo
+    Soprano: original
+    Alto:    Soprano - 3
+    Tenor:   Soprano - 7
+    Bajo:    Soprano - 12
 
   notas_simultaneas_2:
-    # 2 notas: soprano y bajo fijos, alto y tenor generados
-    soprano: voz_aguda
-    alto: soprano - 3
-    tenor: soprano - 7
-    bajo: voz_grave
+    Soprano: voz_aguda
+    Alto:    Soprano - 3
+    Tenor:   Soprano - 7
+    Bajo:    voz_grave
 
   notas_simultaneas_3:
-    # 3 notas: soprano, alto, bajo directos; tenor generado
-    soprano: voz_1
-    alto: voz_2
-    tenor: alto - 5            # cuarta justa abajo del alto
-    bajo: voz_3
-
-  notas_simultaneas_4_o_mas:
-    # 4+ notas: asignar por registro agudo→grave
-    asignacion: registro_directo
+    Soprano: voz_1
+    Alto:    voz_2
+    Tenor:   Alto - 5
+    Bajo:    voz_3
 
 restricciones:
-  evitar_cruce_voces: true
-  evitar_quintas_paralelas: true
   bajo_sostenido: true
   notas_de_paso_en_saltos_grandes: true
-  umbral_salto_nota_de_paso: 12  # semitonos
+  umbral_salto_nota_de_paso: 12
 
 procesamiento:
-  snap_grid: 0.25              # semicorchea
+  snap_grid: 0.25
   duracion_minima_nota: 0.25
-  tolerancia_simultaneidad: 0.05  # segundos
+  tolerancia_simultaneidad: 0.05

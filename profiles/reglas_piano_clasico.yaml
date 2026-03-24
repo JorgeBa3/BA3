@@ -1,0 +1,68 @@
+# ═══════════════════════════════════════════════════════════════════
+# PERFIL: Piano Clásico — 4 voces
+# BA³ | Para comparar con marimba guatemalteca
+# ═══════════════════════════════════════════════════════════════════
+# Diferencia clave vs marimba:
+#   - Rangos más amplios (el piano cubre 7 octavas)
+#   - 3ra MAYOR (-4) como intervalo principal (sonido más brillante)
+#   - Bajo sostenido (el piano puede sostener con pedal)
+#   - Voicing más abierto entre voces
+
+meta:
+  instrumento: "Piano"
+  descripcion: "Arreglo para piano clásico, escritura coral 4 voces, estilo Bach/Mozart"
+  autor: ""
+  version: "1.0"
+  genero: "clasico"
+
+voces:
+  Soprano:
+    rango_midi: [60, 96]       # C4 - C7
+    nombre_rango: "C4 - C7"
+    duracion_minima: 0.25
+
+  Alto:
+    rango_midi: [48, 79]       # C3 - G5
+    nombre_rango: "C3 - G5"
+    duracion_minima: 0.25
+
+  Tenor:
+    rango_midi: [36, 64]       # C2 - E4
+    nombre_rango: "C2 - E4"
+    duracion_minima: 0.25
+
+  Bajo:
+    rango_midi: [24, 52]       # C1 - E3
+    nombre_rango: "C1 - E3"
+    duracion_minima: 1.0
+    extender_duracion: true    # piano: pedal sostiene el bajo
+
+armonizacion:
+
+  notas_simultaneas_1:
+    Soprano: original
+    Alto:    Soprano - 4       # 3ra mayor (más brillante que la 3ra menor)
+    Tenor:   Soprano - 7       # 5ta justa
+    Bajo:    Soprano - 12      # octava
+
+  notas_simultaneas_2:
+    Soprano: voz_aguda
+    Alto:    Soprano - 4
+    Tenor:   Soprano - 7
+    Bajo:    voz_grave
+
+  notas_simultaneas_3:
+    Soprano: voz_1
+    Alto:    voz_2
+    Tenor:   Alto - 5          # cuarta justa abajo del alto
+    Bajo:    voz_3
+
+restricciones:
+  bajo_sostenido: true
+  notas_de_paso_en_saltos_grandes: true
+  umbral_salto_nota_de_paso: 12
+
+procesamiento:
+  snap_grid: 0.25
+  duracion_minima_nota: 0.25
+  tolerancia_simultaneidad: 0.04

@@ -1,0 +1,63 @@
+# ═══════════════════════════════════════════════════════════════════
+# PERFIL: Guitarra Jazz (Comping)
+# BA³ | Para comparar con marimba guatemalteca
+# ═══════════════════════════════════════════════════════════════════
+# Diferencias clave vs marimba:
+#   - Solo 3 voces (la guitarra no puede ejecutar 4 líneas independientes)
+#   - 7ma menor (-10) como intervalo de color — la firma del jazz
+#   - Todos los acordes son CORTOS (comping rítmico, no sostenidos)
+#   - snap_grid 0.5 para el feel de swing
+#   - Esta es la que va a sonar MÁS DIFERENTE al resto
+
+meta:
+  instrumento: "Guitarra Jazz"
+  descripcion: "Guitarra jazz estilo comping, 3 voces con 7mas, voicings abiertos"
+  autor: ""
+  version: "1.0"
+  genero: "jazz"
+
+voces:
+  Melodia:
+    rango_midi: [62, 86]       # D4 - D6
+    nombre_rango: "D4 - D6"
+    duracion_minima: 0.25
+    extender_duracion: false
+
+  Voz_Media:
+    rango_midi: [50, 74]       # D3 - D5
+    nombre_rango: "D3 - D5"
+    duracion_minima: 0.25
+    extender_duracion: false
+
+  Bajo_Jazz:
+    rango_midi: [38, 57]       # D2 - A3
+    nombre_rango: "D2 - A3"
+    duracion_minima: 0.25
+    extender_duracion: false   # bajo jazz: corto y percutido
+
+armonizacion:
+
+  notas_simultaneas_1:
+    Melodia:    original
+    Voz_Media:  Melodia - 10   # 7ma menor — LA FIRMA DEL JAZZ
+    Bajo_Jazz:  Melodia - 12   # octava abajo
+
+  notas_simultaneas_2:
+    Melodia:    voz_aguda
+    Voz_Media:  Melodia - 10   # 7ma menor
+    Bajo_Jazz:  voz_grave
+
+  notas_simultaneas_3:
+    Melodia:    voz_1
+    Voz_Media:  voz_2
+    Bajo_Jazz:  voz_3
+
+restricciones:
+  bajo_sostenido: false
+  notas_de_paso_en_saltos_grandes: true
+  umbral_salto_nota_de_paso: 10
+
+procesamiento:
+  snap_grid: 0.5               # corchea — swing feel
+  duracion_minima_nota: 0.25
+  tolerancia_simultaneidad: 0.06
