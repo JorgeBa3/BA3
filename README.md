@@ -328,7 +328,7 @@ Do you work with an instrument that's not on the list? You can contribute:
 
 1. Create your profile based on `plantilla_generica.yaml`
 2. Try it with at least one test MIDI file. (`python generar_midis_prueba.py`)
-3. Open a Pull Request in the repository
+3. You can send it to the email `alejandrodeleon@computer.org` so we can add it in the project.
 
 Contributed profiles are automatically validated with:
 ```bash

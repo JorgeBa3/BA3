@@ -342,7 +342,7 @@ Si Ollama no está instalado, el resto de la app funciona normalmente.
 
 1. Creá tu perfil basándote en `plantilla_generica.yaml`
 2. Probalo con al menos un MIDI de prueba (`python generar_midis_prueba.py`)
-3. Abrí un Pull Request en el repositorio
+3. Puedes mandarlo al correo `alejandrodeleon@computer.org` para que podamos agregarlo al proyecto.
 
 Los perfiles contribuidos se validan automáticamente con:
 ```bash
