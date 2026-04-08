@@ -1,100 +1,102 @@
-# Marimba Arranger — Motor de Reglas YAML
+# Marimba Arranger — YAML Rule Engine
 
-Aplicación de escritorio de software libre para generar arreglos musicales
-automáticos basados en reglas configurables en YAML. El motor es completamente
-genérico: el conocimiento musical vive en los archivos `.yaml`, no en el código.
+*Languages:*
+- *[English](README.md)*
+- *[Spanish](README-ES.md)*
+---
 
-## Instalación
+An Open Source Software Desktop Application to generate musical arrangements based on configurable rules in YAML. This engine is completely generic: the musical knowegde comes from the `.yaml` archives, not from the code.
+
+## Instalation Commands
+
+After download and extract this project, you need to execute this commands in the folder you extract it:
 
 ```bash
 pip install -r requirements.txt
 python app_gui.py
 ```
 
-## Archivos
+## Files
 
-| Archivo | Descripción |
+| File | Description |
 |---|---|
-| `app_gui.py` | Interfaz gráfica principal (CustomTkinter) |
-| `rule_engine.py` | Motor genérico que aplica las reglas YAML |
-| `plantilla_generica.yaml` | Plantilla base para crear nuevos perfiles |
-| `reglas_marimba_guatemalteca.yaml` | Perfil para marimba guatemalteca de concierto |
-| `midi_parser.py` | Lectura y parsing de archivos MIDI |
-| `voice_separator.py` | Separación de voces (módulo legacy) |
-| `marimba_range.py` | Rangos de voces para marimba (legacy) |
-| `exporter.py` | Exportación a MusicXML y MIDI |
-| `metrics.py` | Cálculo de métricas del arreglo |
-| `utils.py` | Funciones auxiliares |
+| `app_gui.py` | Principal Graphical Interface (CustomTkinter) |
+| `rule_engine.py` | Generic engine that applies the YAML rules  |
+| `plantilla_generica.yaml` | Template base to make new profiles |
+| `reglas_marimba_guatemalteca.yaml` | Profile for a Guatemalan Concert Marimba |
+| `midi_parser.py` | Lecture and parsing of MIDI files |
+| `voice_separator.py` | Voices Separator (Legacy Module) |
+| `marimba_range.py` | Voice Ranges for Marimba (Legacy) |
+| `exporter.py` | Exportation to MusicXML y MIDI |
+| `metrics.py` | Calculation of arrangement metrics |
+| `utils.py` | Auxiliar Functions |
 
-## Flujo de trabajo
+## Workflow
 
-1. Cargar un archivo MIDI de entrada
-2. Cargar o editar el archivo de reglas `.yaml` en el editor integrado
-3. Seleccionar carpeta de salida
-4. Presionar **PROCESAR ARREGLO**
-5. Revisar métricas en el panel derecho
-6. Escuchar el preview con el reproductor
+1. Load an input MIDI file 
+2. Load or edite the `.yaml` rules file in the built-in editor
+3. Select output folder
+4. Press **PROCESAR ARREGLO**
+5. Review metrics in the right panel
+6. Listen the preview with the player
 
 ---
 
-## Formato de reglas YAML
+## YAML Rules Format
 
-El archivo YAML es el corazón del sistema. Define **todo el conocimiento musical**
-del arreglo: cuántas voces hay, qué rango tiene cada una, cómo se generan las
-voces faltantes y qué restricciones se aplican. El motor de código no sabe nada
-del instrumento destino — esa información vive exclusivamente en este archivo.
+The YAML file is the heart of the system. Defines **all of the musical knowledge**
+in the arragement: how many voices, what is the range or each one, how we generate the missing voices and what restictions apply. The code engine knows nothing about the target instrument—that information resides exclusively in this file.
 
-Esto hace que el sistema sea extensible por cualquier persona, sin programar:
-basta con crear un nuevo `.yaml` para soportar un instrumento o género distinto.
+This makes the system extensible by anyone, without programming: simply create a new `.yaml` file to support a different instrument or genre.
 
-### Estructura completa
+### Complete Structure
 
-Un archivo de reglas tiene cinco secciones:
+A rules file has five sections:
 
 ```yaml
-meta:          # Metadatos del perfil (nombre, autor, versión)
-voces:         # Definición de cada voz: rango, duración, comportamiento
-armonizacion:  # Cómo generar voces faltantes según cuántas notas hay
-restricciones: # Reglas de voice leading y post-procesamiento
-procesamiento: # Parámetros técnicos (cuantización, tolerancia)
+meta:          # Profile Metadata (name, author, version)
+voces:         # Definition of each voice: range, duration, behavior
+armonizacion:  # How to generate missing voices based on the number of notes
+restricciones: # voice leading and post-processing rules
+procesamiento: # Technical parameters (quantization, tolerance)
 ```
 
 ---
 
-### `meta` — Metadatos del perfil
+### `meta` — Profile Metadata
 
-Información descriptiva. No afecta el procesamiento, pero es importante
-para identificar el perfil en el repositorio comunitario.
+Descriptive information. It does not affect processing, but it is important
+for identifying the profile in the community repository.
 
 ```yaml
 meta:
-  instrumento: "Marimba Guatemalteca"   # Nombre visible en la app
+  instrumento: "Marimba Guatemalteca"   # Name visible in app
   descripcion: "Arreglo estándar para marimba guatemalteca de concierto"
   autor: "Nombre del arreglista"
   version: "1.0"
-  genero: "general"                     # general | clasico | jazz | popular | folclor
+  genero: "general"                     # general | clasic | jazz | popular | folclor
 ```
 
 ---
 
-### `voces` — Definición de voces
+### `voces` — Voices Definition
 
-Define cuántas voces tiene el arreglo y las propiedades de cada una.
-El orden importa: **primera voz = más aguda, última = más grave**.
-Podés tener entre 2 y 8 voces. El motor se adapta automáticamente.
+Define the number of voices in the arrangement and the properties of each voice.
+Order matters: **first voice = highest pitch, last voice = lowest pitch**.
+You can have between 2 and 8 voices. The engine adjusts automatically.
 
 ```yaml
 voces:
-  Soprano:                      # El nombre es libre — aparecerá en la partitura
-    rango_midi: [67, 84]        # [MIDI mínimo, MIDI máximo] — obligatorio
-    nombre_rango: "G4 - C6"     # Solo informativo, para documentación
-    salto_maximo: 7             # Semitonos — referencia, no aplicado aún
-    duracion_minima: 0.25       # En quarter notes: 0.25=semicorchea, 0.5=corchea, 1.0=negra
+  Soprano:                      # The name is free — it will appear in the score
+    rango_midi: [67, 84]        # [MIDI mínimo, MIDI máximo] — mandatory
+    nombre_rango: "G4 - C6"     # Just informative, for documentation
+    salto_maximo: 7             # Halftones — reference, not yet applied
+    duracion_minima: 0.25       # In quarter notes: 0.25=sixteenth note, 0.5=eighth note, 1.0=quarter note
 
   Bajo:
     rango_midi: [31, 48]        # G1 - C3
     duracion_minima: 1.0
-    extender_duracion: true     # true = la nota dura hasta la siguiente (bajo sostenido)
+    extender_duracion: true     # true = the note lasts until the next one (bass sharp)
 ```
 
 **Referencia de números MIDI:**
@@ -106,127 +108,122 @@ voces:
 | C3   | 48   | C5   | 72   | C7  | 96 |
 | G3   | 55   | G5   | 79   |     |    |
 
-Fórmula: `MIDI = (octava + 1) × 12 + clase_de_nota`
-donde C=0, D=2, E=4, F=5, G=7, A=9, B=11.
+Formula: `MIDI = (octava + 1) × 12 + clase_de_nota`
+where C=0, D=2, E=4, F=5, G=7, A=9, B=11.
 
 ---
 
-### `armonizacion` — Generación de voces faltantes
+### `armonizacion` — Missing Voices Generator
 
-Esta sección define qué hacer cuando el MIDI tiene **menos notas simultáneas
-que voces**. Por ejemplo, si el MIDI tiene 2 notas pero el arreglo tiene 4 voces,
-el motor necesita saber cómo generar las 2 voces faltantes.
+This section defines what to do when the MIDI has **fewer simultaneous notes than voices**. For example, if the MIDI has 2 notes but the arrangement has 4 voices,
+the engine needs to know how to generate the 2 missing voices.
 
-Se define una clave por cada caso posible:
+One key is defined for each possible case:
 
 ```yaml
 armonizacion:
-  notas_simultaneas_1:    # Cuando hay exactamente 1 nota en ese momento
+  notas_simultaneas_1:    # When there is exactly 1 note at that moment
     ...
-  notas_simultaneas_2:    # Cuando hay 2 notas simultáneas
+  notas_simultaneas_2:    # When there are 2 simultaneous notes
     ...
-  notas_simultaneas_3:    # Cuando hay 3 notas simultáneas
+  notas_simultaneas_3:    # When there are 3 simultaneous notes
     ...
-  notas_simultaneas_default:  # Fallback para cualquier caso no definido
+  notas_simultaneas_default:  # Fallback for any undefined case
     ...
 ```
 
-Cuando hay **tantas notas como voces o más**, el motor asigna directamente
-de agudo a grave sin consultar estas reglas.
+When there are **as many notes as voices or more**, the engine directly assigns notes from high to low without consulting these rules.
 
-#### Expresiones de intervalo
+#### Interval expressions
 
-Cada voz dentro de un caso de armonización se define con una expresión:
+Each voice within a harmonization case is defined by an expression:
 
-| Expresión | Significado |
+| Expression | Meaning |
 |-----------|-------------|
-| `original` | El pitch exacto de la nota más aguda del grupo |
-| `soprano` | Alias de `original` — la voz más aguda |
-| `voz_aguda` | La nota más aguda del grupo MIDI |
-| `voz_grave` | La nota más grave del grupo MIDI |
-| `voz_1` | La primera nota del grupo (más aguda) |
-| `voz_2` | La segunda nota del grupo |
-| `voz_3` | La tercera nota del grupo |
-| `<nombre> - N` | N semitonos abajo de `<nombre>` |
-| `<nombre> + N` | N semitonos arriba de `<nombre>` |
-| `<nombre_de_voz>` | Referencia a una voz ya calculada en este grupo |
+| `original` | The exact pitch of the highest note in the group |
+| `soprano` | Alias ​​of `original` — the highest voice |
+| `voz_aguda` | The highest note in the MIDI group |
+| `voz_grave` | The lowest note in the MIDI group |
+| `voz_1` | The first note of the group (highest) |
+| `voz_2` | The second note from the group |
+| `voz_3` | The third note from the group |
+| `<nombre> - N` | N halftones below `<nombre>` |
+| `<nombre> + N` | N halftones above `<nombre>` |
+| `<nombre_de_voz>` | Reference to a voice already calculated in this group |
 
-La última opción es poderosa: permite que una voz tome como referencia
-a otra voz **ya asignada** en el mismo grupo, no solo a las notas del MIDI.
+The last option is powerful: it allows a voice to reference
+another voice **already assigned** in the same group, not just the MIDI notes.
 
 ```yaml
-# Ejemplo: el Tenor se calcula a partir del Alto ya asignado
+# Example: The Tenor is calculated from the already assigned Alto
 notas_simultaneas_2:
   Soprano: voz_aguda
-  Alto:    Soprano - 3     # 3 semitonos abajo del Soprano
-  Tenor:   Alto - 5        # 5 semitonos abajo del Alto (ya calculado)
+  Alto:    Soprano - 3     # 3 halftones below Soprano
+  Tenor:   Alto - 5        # 5 halftones below Alto (already calculated)
   Bajo:    voz_grave
 ```
 
-#### Intervalos musicales de referencia
+#### Reference Musical Intervals
 
-| Semitonos | Intervalo |
+| Halftones | Interval |
 |-----------|-----------|
-| -1  | 2da menor |
-| -2  | 2da mayor (tono) |
-| -3  | 3ra menor |
-| -4  | 3ra mayor |
-| -5  | 4ta justa |
-| -6  | tritono |
-| -7  | 5ta justa |
-| -8  | 6ta menor |
-| -9  | 6ta mayor |
-| -10 | 7ma menor |
-| -11 | 7ma mayor |
-| -12 | octava |
+| -1  | Minor 2nd (m2) |
+| -2  | Major 2nd (M3) |
+| -3  | Minor 3rd (m3) |
+| -4  | Major 3rd (M4) |
+| -5  | Perfect 4th (P4) |
+| -6  | Tritone (TT) |
+| -7  | Perfect 5th (P5) |
+| -8  | Minor 6th (m6) |
+| -9  | Major 6th (M6) |
+| -10 | Minor 7th (m7) |
+| -11 | Major 7th (M7) |
+| -12 | Perfect Octave (P8) |
 
-> **Nota sobre transposición automática:** después de calcular el pitch con
-> la expresión, el motor lo transpone por octavas automáticamente hasta que
-> quede dentro del `rango_midi` definido para esa voz. No necesitás preocuparte
-> por en qué octava está el resultado.
+> **Note on automatic transposition:** After calculating the pitch with the expression, the engine automatically transposes it by octaves until it falls within the MIDI range defined for that voice. You don't need to worry about which octave the result is in.
 
 ---
 
-### `restricciones` — Voice leading y post-procesamiento
+### `restricciones` — Voice leading y post-processing
 
 ```yaml
 restricciones:
   bajo_sostenido: true
-  # La última voz extiende su duración hasta la siguiente nota,
-  # llenando los silencios. Produce un bajo más melódico y continuo.
+  # The last voice extends its duration into the next note,
+  # filling the silences. It produces a more melodic and continuous bass.
 
   notas_de_paso_en_saltos_grandes: true
-  # Cuando hay un salto mayor al umbral entre dos notas consecutivas
-  # de cualquier voz, se interpola una nota de paso a la mitad del espacio.
+  # When there is a leap greater than the threshold between two consecutive notes
+  # of any voice, a passing note is interpolated halfway across the space.
 
   umbral_salto_nota_de_paso: 12
-  # Semitonos mínimos para activar la nota de paso. 12 = octava.
-  # Bajarlo a 7 interviene también en saltos de quinta.
+  # Minimum semitones to activate the passing note. 12 = octave.
+  # Lowering it to 7 also affects leaps of a fifth.
 ```
 
 ---
 
-### `procesamiento` — Parámetros técnicos
+### `procesamiento` — Technical Parameters
 
 ```yaml
 procesamiento:
   snap_grid: 0.25
-  # Cuantización rítmica en quarter notes.
-  # 0.25 = semicorchea (más preciso)
-  # 0.5  = corchea
-  # 1.0  = negra (más "cuadrado")
+  # Rhythmic quantization in quarter notes.
+  # 0.25 = sixteenth note (more precise)
+  # 0.5 = eighth note
+  # 1.0 = quarter note (more "square")
 
   duracion_minima_nota: 0.25
-  # Ninguna nota puede ser más corta que esto.
+  # No note can be shorter than this.
 
   tolerancia_simultaneidad: 0.05
-  # Segundos de margen para considerar que dos notas suenan "al mismo tiempo".
-  # Útil para MIDIs con timing humanizado.
+  # Seconds of margin to consider two notes as sounding "at the same time".
+  # Useful for MIDI with humanized timing.
 ```
 
 ---
 
-### Ejemplo completo — Marimba Guatemalteca
+### Complete Example — Marimba Guatemalteca
 
 ```yaml
 meta:
@@ -279,43 +276,39 @@ procesamiento:
 
 ---
 
-### Crear un perfil para otro instrumento
+### Create a New Profile for Another Instrument 
 
-1. Copiá `plantilla_generica.yaml`
-2. Cambiá los valores de `rango_midi` en cada voz
-3. Ajustá los intervalos en `armonizacion` según la escritura idiomática del instrumento
-4. Guardá con nombre descriptivo: `reglas_vibrafono.yaml`, `reglas_cuarteto.yaml`, etc.
-5. Cargalo en la app con el botón **Cargar**
+1. Make a copy of `plantilla_generica.yaml`
+2. Change the `rango_midi` values ​​in each voice
+3. Adjust the intervals in `armonizacion` according to the idiomatic writing of the instrument
+4. Save it with a descriptive name like: `reglas_vibrafono.yaml`, `reglas_cuarteto.yaml`, etc.
+5. Load it in the app with the button **Cargar**
 
-Los perfiles son archivos de texto plano portables. Pueden compartirse entre
-arreglistas, versionarse en Git, y en el futuro generarse automáticamente
-a partir de descripciones en lenguaje natural.
+Profiles are portable plain text files. They can be shared among arrangers, versioned in Git, and in the future, automatically generated from natural language descriptions.
 
 ---
 
 ## Asistente IA (opcional)
 
-El panel derecho de la app incluye un asistente que genera perfiles YAML
-desde descripciones en lenguaje natural. Requiere [Ollama](https://ollama.com)
-instalado localmente.
+The app's right panel includes a wizard that generates YAML profiles from natural language descriptions. It requires [Ollama](https://ollama.com) to be installed locally.
 
 ```bash
-# Instalar el modelo recomendado (una sola vez, ~2.3 GB)
+# Install the recommended model (only once, ~2.3 GB)
 ollama pull phi3
 ```
 
-El asistente corre completamente **offline** — ningún dato sale de tu máquina.
-Si Ollama no está instalado, el resto de la app funciona normalmente.
+The assistant runs completely offline—no data leaves your machine.
 
-> **Nota:** Los perfiles generados por el asistente IA son un punto de partida.
-> Se recomienda revisarlos en el editor antes de procesar, especialmente los
-> rangos MIDI y los intervalos de armonización.
+If Ollama is not installed, the rest of the app functions normally.
+
+> **Note:** The profiles generated by the AI ​​assistant are a starting point.
+> It is recommended to review them in the editor before processing, especially the MIDI ranges and harmonization intervals.
 
 ---
 
-## Perfiles incluidos
+## Included Profiles
 
-| Archivo | Instrumento | Voces | Género |
+| File | Instrument | Voices | Musical Genre |
 |---|---|---|---|
 | `reglas_marimba_guatemalteca.yaml` | Marimba Guatemalteca | 4 | General |
 | `reglas_tusa_pop.yaml` | Marimba Guatemalteca | 4 | Pop latino |
@@ -329,50 +322,45 @@ Si Ollama no está instalado, el resto de la app funciona normalmente.
 
 ---
 
-## Contribuir perfiles
+## Contribute Profiles
 
-¿Trabajás con un instrumento que no está en la lista? Podés contribuir:
+Do you work with an instrument that's not on the list? You can contribute:
 
-1. Creá tu perfil basándote en `plantilla_generica.yaml`
-2. Probalo con al menos un MIDI de prueba (`python generar_midis_prueba.py`)
-3. Abrí un Pull Request en el repositorio
+1. Create your profile based on `plantilla_generica.yaml`
+2. Try it with at least one test MIDI file. (`python generar_midis_prueba.py`)
+3. Open a Pull Request in the repository
 
-Los perfiles contribuidos se validan automáticamente con:
+Contributed profiles are automatically validated with:
 ```bash
 python rule_engine.py --validate tu_perfil.yaml
 ```
 
 ---
 
-## Limitaciones conocidas
+## Known Limitations
 
-Estas limitaciones son conocidas y están documentadas para trabajo futuro:
+These limitations are known and documented for future work:
 
-- **Asistente IA:** Los perfiles generados automáticamente pueden tener
-  errores en rangos o referencias de voces. Siempre revisar antes de usar.
-- **MIDI con tempo variable:** El parser usa el primer tempo del archivo.
-  Piezas con múltiples cambios de tempo pueden tener desincronización.
-- **Cuantización rítmica:** El snap al grid puede afectar piezas con
-  ritmos muy sincopados. Ajustar `snap_grid: 0.125` para más precisión.
-- **Exportación MIDI con batería:** En algunos casos music21 falla al
-  exportar MIDI con percusión. El sistema re-exporta automáticamente
-  sin batería como fallback.
+- **AI Assistant:** Automatically generated profiles may have errors in voice ranges or references. Always check before use.
+- **MIDI with Variable Tempo:** The parser uses the first tempo in the file. Pieces with multiple tempo changes may experience desynchronization.
+- **Rhythmic Quantization:** Snapping to the grid can affect pieces with highly syncopated rhythms. Adjust `snap_grid: 0.125` for greater accuracy.
+- **MIDI Export with Drums:** In some cases, music21 fails to export MIDI with percussion. The system automatically re-exports without drums as a fallback.
 
 ---
 
-## Trabajo futuro
+## Future Work
 
-- Inferencia automática de reglas desde corpus de arreglos existentes
-- Perfil para marimba orquesta guatemalteca (instrumento completo)
-- Evaluación controlada del asistente IA con músicos no técnicos
-- Instalador de un solo clic (.exe Windows, .dmg macOS)
-- Repositorio comunitario de perfiles con validación automatizada
+- Automatic rule inference from existing arrangement corpora
+- Profile for Guatemalan marimba orchestra (complete instrument)
+- Controlled evaluation of the AI ​​assistant with non-technical musicians
+- One-click installer (.exe Windows, .dmg macOS)
+- Community repository of profiles with automated validation
 
 ---
 
-## Citar este trabajo
+## Cite this work
 
-Si lo usas en tu investigación:
+If you use it in your research:
 
 ```
 De León Batres, J.A. & Serrano, M.P. (2026). A Rule-Based Adaptive
@@ -382,7 +370,7 @@ Guatemalan Marimba.
 
 ---
 
-## Licencia
+## License
 
 Software Libre — MIT License
 
