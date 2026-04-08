@@ -3,3 +3,5 @@ music21
 customtkinter
 pyyaml
 pygame
+pretty_midi
+music21
